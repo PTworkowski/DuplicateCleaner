@@ -2,9 +2,7 @@ import os
 import hashlib
 import data_base
 from functools import partial
-from sqlalchemy import create_engine, Column, Integer, String, insert
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+
 
 
 def hasher(file_path):
@@ -16,35 +14,35 @@ def hasher(file_path):
     return h.hexdigest()
 
 
-def compute(drirectory, recursevle=True):
+def compute(directory, recursive):
     files_data = []
-    if recursevle:
-        for path, direc, name in os.walk(drirectory):
+    if recursive:
+        for path, direc, name in os.walk(directory):
             if name != []:
                 for n in name:
                     file_path = os.path.join(path, n)
-                    name, extention = os.path.splitext(n)
+                    name, extension = os.path.splitext(n)
                     hashed = hasher(file_path)
-                    files_data.append([file_path, name, extention, hashed])
+                    files_data.append([file_path, name, extension, hashed])
 
     else:
-        for file_name in os.listdir(drirectory):
-            if os.path.isfile(os.path.join(drirectory, file_name)):
-                file_path = os.path.join(drirectory, file_name)
-                name, extention = os.path.splitext(file_name)
+        for file_name in os.listdir(directory):
+            if os.path.isfile(os.path.join(directory, file_name)):
+                file_path = os.path.join(directory, file_name)
+                name, extension = os.path.splitext(file_name)
                 hashed = hasher(file_path)
-                files_data.append([file_path, name, extention, hashed])
+                files_data.append([file_path, name, extension, hashed])
     return files_data
 
 
 def delete_duble():
 
-    duble_dict = data_base.get_duble()
-    hashes = list(duble_dict.values())
-    for o in duble_dict:
-        if hashes.count(duble_dict[o]) > 1:
+    double_dict = data_base.get_double()
+    hashes = list(double_dict.values())
+    for o in double_dict:
+        if hashes.count(double_dict[o]) > 1:
             os.remove(o)
-            hashes.remove(duble_dict[o])
+            hashes.remove(double_dict[o])
 
 
 if __name__ == "__main__":
